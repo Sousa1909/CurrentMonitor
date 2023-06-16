@@ -1,0 +1,26 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+    # Ubuntu OS for the vm
+    config.vm.box = "ubuntu/focal64"
+    # Shared folder
+    config.vm.synced_folder "./shared_folder", "/home/vagrant/share", type: "virtualbox" 
+    # Static IP address
+    config.vm.network "public_network", ip: "192.168.1.100"
+    
+    # Define VM configs
+    config.vm.define "MP-Server" do |ubuntu|
+      ubuntu.vm.provider :virtualbox do |vb|
+        # VM name -> Multi-Purpose server (Web Sever + MQTT Broker)
+        vb.name = "MP-Server"
+        # Alocated memory
+        vb.memory = 1024
+      end
+    # VM Setup Scripts
+    ubuntu.vm.provision "shell", path: "./scripts/initial.sh"
+    ubuntu.vm.provision "shell", path: "./scripts/mosquitto.sh"
+    ubuntu.vm.provision "shell", path: "./scripts/final.sh"
+    
+    end
+end
