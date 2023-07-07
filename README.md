@@ -25,7 +25,7 @@ The objective of this project is to use concepts from MQTT (Publisher, Broker & 
   * Vagrant:
     * The VM we are going to be using is launched via [Vagrant](https://developer.hashicorp.com/vagrant).
       * This means:
-          1. You need to [install VirtualBox](https://www.virtualbox.org/), or any other virtualization program l
+          1. You need to [install VirtualBox](https://www.virtualbox.org/)
           2. You need to [install Vagrant](https://developer.hashicorp.com/vagrant/downloads), if you don't have it already.
           3. After installing all you have to do is:
              1. Run `vagrant up` in any terminal. This will create the VM according to the specifications in the `Vagrantfile` and the Shell scripts under `/scripts`.         
@@ -33,7 +33,7 @@ The objective of this project is to use concepts from MQTT (Publisher, Broker & 
                 > When running `vagrant up` make sure you are under the same directory as the `Vagrantfile` or else it won't work.  
              2. When that is done if you want to access the VM's terminal all you have to do is run `vagrant ssh`.
                 > **Note**  
-                > If you want to exit the ssh al you have to do is run `exit` in the VM terminal. Additionally to turn off the VM simply run `vagrant halt` under the same directory as the `Vagrantfile`
+                > If you want to exit the ssh all you have to do is run `exit` in the VM terminal. Additionally to turn off the VM simply run `vagrant halt` under the same directory as the `Vagrantfile`
 
 
 
