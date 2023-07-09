@@ -2,8 +2,8 @@
 
 import time
 import network
-from machine import ADC
-from umqttsimple import MQTTClient, reset
+from machine import ADC, reset
+from umqttsimple import MQTTClient
 
 #################################
 #
@@ -54,15 +54,16 @@ def connectWifi(location):
         # Idles the RP while the wifi connection is not established
         while not wlan.isconnected():
             print("Waiting for connection...")
+            time.sleep(2)
             machine.idle()
 
         # Connection Established
         print('''\
-WLAN: connected!
+\nWLAN: connected!\n
       WiPy IP: {}
       NETMASK: {}
       GATEWAY: {}
-      DNS:     {}'''.format(*wlan.ifconfig())
+      DNS:     {}\n'''.format(*wlan.ifconfig())
         )
         return True
 
@@ -135,14 +136,24 @@ def mqttConnect():
     Returns:
         MQTTClient: An instance of a MQTT Client
     """
+
     client = MQTTClient(
         broker_cid,
         broker_addr,
         user = broker_usr,
         password = broker_pswrd,
         keepalive = 60
-    ).connect()
-    print('Connected to %s MQTT Broker'%(broker_addr))
+    )
+    client.set_last_will(
+        broker_topic,
+        "Something went wrong! This is the Last Will message.",
+        retain=False,
+        qos=0
+    )
+
+    client.connect(clean_session=False)
+    print('Connected to %s MQTT Broker\n'%(broker_addr))
+
     return client
 
 def mqttReconnect():
@@ -155,6 +166,7 @@ def mqttReconnect():
     """
     print('Failed to connected to the MQTT Broker. Attempting to reconnect...')
     time.sleep(5)
+    print("antes do RESET")
     machine.reset()
 
 #################################
@@ -185,16 +197,17 @@ def run():
 
         while True:
             try:
-                toPublish = str("Value: ", currentCalc(), "A\n")
-                print(toPublish)
+                toPublish =  currentCalc()
+                print("Value: ", toPublish, "A")
                 client.publish(
                     broker_topic,
-                    msg= toPublish
+                    msg=str(toPublish)
                     )
-                print('Published to MQTT Broker Successfully!')
+                print('Published to MQTT Broker Successfully!\n')
                 time.sleep(3)
             except:
                 print("Something went wrong with the connection! Attempting to reconnect...")
                 mqttReconnect()
+                pass
 # :)
 run()
