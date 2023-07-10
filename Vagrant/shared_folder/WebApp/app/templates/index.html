@@ -2,11 +2,40 @@
 <html>
 <head>
     <title>Real-Time Data Visualization</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" type="text/css" href="./static/css/site.css">
 </head>
 <body>
     <!-- Your HTML content and JavaScript code for data visualization -->
     
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <header>
+        <img src="logo-ipt.jpg" alt="Emblema do IPT">
+        <h1><a class="link-title" href="https://github.com/Sousa1909/CurrentMonitor" target="_blank">Current Monitor</a></h1>
+        <h4>Redes e Infraestruturas</h4>
+    </header>
+
+    <div id="chart">
+        <canvas id="grafico"></canvas>
+        <script src="./static/js/site.js"></script>
+    </div>
+    <div class="card-container">
+        <div class="card">
+            <h2>Informação 1</h2>
+            <p>Valor: <span id="informacao1-valor"></span></p>
+        </div>
+        <div class="card">
+            <h2>Custo</h2>
+            <p>Valor: <span id="informacao2-valor"></span> Euros</p>
+            <h2>Custo Total</h2>
+            <p>Custo Total: <span id="custo-total-valor"></span> Euros</p>
+        </div>
+    </div>
+    <div id="condições">
+        <button id="btnAlert">Alerta</button>
+    </div>
+
+    <footer>
+        <p>Gonçalo Sousa nº12345 e João Domingues nº25364</p>
+    </footer>
 </body>
 </html>
