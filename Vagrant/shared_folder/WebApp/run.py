@@ -1,1 +1,5 @@
-# entry point of your application, where you start the Flask server.
+# Entry point for the WebApp
+from app import app, socketio
+
+if __name__ == '__main__':
+    socketio.run(app, debug=True)

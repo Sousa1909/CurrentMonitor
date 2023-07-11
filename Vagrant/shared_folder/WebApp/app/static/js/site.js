@@ -72,11 +72,24 @@ function verificarAlerta(valor) {
     }
 }
 
-// Função para atualizar o gráfico com os novos dados
+// Function to update the graph with new data
 function atualizarGrafico(dados) {
-    chart.data.labels.push(new Date().toLocaleTimeString()); 
-    chart.data.datasets[0].data.push(dados); // Adicionar o novo dado
-    chart.update(); // Atualizar o gráfico
+    // Remove the oldest data point if the number of data points exceeds 10
+    if (chart.data.labels.length >= 10) {
+        chart.data.labels.shift(); // Remove the first label
+        chart.data.datasets[0].data.shift(); // Remove the first data point
+    }
+    
+    // Add the current timestamp to the labels array
+    chart.data.labels.push(new Date().toLocaleTimeString());
+
+    // Add the new data point to the dataset
+    chart.data.datasets[0].data.push(dados);
+
+    // Update the entire datasets array
+    chart.update({
+        preservation: true // Preserve the current animation
+    });
 
     historicoValores.push(dados);
 
