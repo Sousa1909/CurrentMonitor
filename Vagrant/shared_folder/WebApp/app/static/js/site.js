@@ -45,7 +45,11 @@ let valorAtual = null;
 
 const historicoValores = [];
 
-const taxaCustoPorAmpere = 0.05;
+// tensão 230V convertido dá 0,23kWh
+//preço kWh = 0,13640 €/kWh
+// logo a taxa de custo por hora é 0,23*0,13640
+// sabendo que é por hora, divide-se por 60
+const taxaCustoPorAmpere = (0.23*0.13640)/60;
 
 // Função para calcular o custo com base nos amperes
 function calcularCusto(amperes) {
@@ -99,12 +103,12 @@ function atualizarGrafico(dados) {
     // Calcular o custo com base nos amperes
     const custo = calcularCusto(dados);
     // Atualizar o valor exibido na seção "Informação 2"
-    document.getElementById('informacao2-valor').textContent = custo.toFixed(2); // Exibir com duas casas decimais
+    document.getElementById('informacao2-valor').textContent = custo.toFixed(6); // Exibir com duas casas decimais
 
     // Calcular o custo total com base no histórico de valores
     const custoTotal = calcularCustoTotal(historicoValores);
     // Atualizar o valor exibido na secção "Custo Total"
-    document.getElementById('custo-total-valor').textContent = custoTotal.toFixed(2); // Exibir com duas casas decimais
+    document.getElementById('custo-total-valor').textContent = custoTotal.toFixed(6); // Exibir com duas casas decimais
 
     // Verificar o alerta com base no último valor recebido
     const ultimoValor = dados[dados.length - 1];
