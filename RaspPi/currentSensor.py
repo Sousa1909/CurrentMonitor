@@ -3,7 +3,7 @@
 import time
 import network
 from machine import ADC, reset
-from umqttsimple import MQTTClient
+from umqtt.simple import MQTTClient
 
 #################################
 #
@@ -26,11 +26,13 @@ def connectWifi(location):
             successfully or not, respectively 
     """
     ssid_list = {
-        'home': 'Wi-Fi Sousa',
+        'home_goncalo': 'Wi-Fi Sousa', 
+        'home_joao': 'VITORPAULA',
         'ipt': 'TPSI'
     }    
     password_list = {
-        'home': 'Goncalo1909',
+        'home_goncalo': 'Goncalo1909',
+        'home_joao': '45159VITPA',
         'ipt': 'tpsi2022'
     }
 
@@ -38,11 +40,16 @@ def connectWifi(location):
     wlan.active(True)
 
     try:
-        if(location == "home"):
+        if(location == "home_goncalo"):
             wlan.connect(
-                ssid_list["home"],
-                password_list["home"]
+                ssid_list["home_goncalo"],
+                password_list["home_goncalo"]
             )
+        elif (location == "home_joao"):
+            wlan.connect(
+                ssid_list["home_joao"],
+                password_list["home_joao"]
+            )  
         elif (location == "ipt"):
             wlan.connect(
                 ssid_list["ipt"],
@@ -186,7 +193,7 @@ def run():
     """
     connectedToWifi = False
     while connectedToWifi == False:
-        connectedToWifi = connectWifi("home")
+        connectedToWifi = connectWifi("home_joao")
     
     while True:
         try:
