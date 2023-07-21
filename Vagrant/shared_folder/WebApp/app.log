@@ -1,0 +1,19 @@
+2023-07-21 16:14:06,530 - INFO -  Generated NGROK Address: "https://641c-2001-818-de13-d000-a00-27ff-fe01-9d4a.ngrok-free.app" -> "http://127.0.0.1:5000"
+2023-07-21 16:14:06,707 - INFO - Connected to the MQTT
+2023-07-21 16:15:22,445 - INFO - Message Payload: {'topic': 'AMPS', 'payload': '0.3125048'}
+2023-07-21 16:15:32,440 - INFO - Message Payload: {'topic': 'AMPS', 'payload': '0.2465858'}
+2023-07-21 16:15:42,831 - INFO - Message Payload: {'topic': 'AMPS', 'payload': '0.3588922'}
+2023-07-21 16:15:52,562 - INFO - Message Payload: {'topic': 'AMPS', 'payload': '0.2685588'}
+2023-07-21 16:16:02,712 - INFO - Message Payload: {'topic': 'AMPS', 'payload': '0.363775'}
+2023-07-21 16:16:12,400 - INFO - Message Payload: {'topic': 'AMPS', 'payload': '0.2319371'}
+2023-07-21 16:16:23,097 - INFO - Message Payload: {'topic': 'AMPS', 'payload': '0.2783246'}
+2023-07-21 16:16:32,520 - INFO - Message Payload: {'topic': 'AMPS', 'payload': '0.2539101'}
+2023-07-21 16:16:42,669 - INFO - Message Payload: {'topic': 'AMPS', 'payload': '0.2417029'}
+2023-07-21 16:16:52,397 - INFO - Message Payload: {'topic': 'AMPS', 'payload': '0.2246128'}
+2023-07-21 16:17:02,743 - INFO - Message Payload: {'topic': 'AMPS', 'payload': '0.2539101'}
+2023-07-21 16:17:13,110 - INFO - Message Payload: {'topic': 'AMPS', 'payload': '0.2075227'}
+2023-07-21 16:17:22,826 - INFO - Message Payload: {'topic': 'AMPS', 'payload': '0.2294957'}
+2023-07-21 16:17:32,826 - INFO - Message Payload: {'topic': 'AMPS', 'payload': '0.280766'}
+2023-07-21 16:17:42,599 - INFO - Message Payload: {'topic': 'AMPS', 'payload': '0.2734417'}
+2023-07-21 16:17:52,946 - INFO - Message Payload: {'topic': 'AMPS', 'payload': '0.2710002'}
+2023-07-21 16:18:02,538 - INFO - Message Payload: {'topic': 'AMPS', 'payload': '0.2636759'}

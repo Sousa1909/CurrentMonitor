@@ -1,35 +1,44 @@
-from app import socketio
 import random
+import json
+from app import app, socketio, cLog
+from flask_mqtt import Mqtt
 
-from paho.mqtt import client as mqtt_client
+#TODO: change the names of these variables
+broker_topic = "AMPS"
 
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['MQTT_BROKER_URL'] = 'localhost'
+app.config['MQTT_BROKER_PORT'] = 1883
+app.config['MQTT_USERNAME'] = 'admin'
+app.config['MQTT_PASSWORD'] = 'admin'
+app.config['MQTT_KEEPALIVE'] = 60
+app.config['MQTT_TLS_ENABLED'] = False
 
-broker = 'localhost'
-port = 1883
-topic = "AMPS"
-# Generate a Client ID with the subscribe prefix.
-client_id = f'subscribe-{random.randint(0, 100)}'
-username = 'admin'
-password = 'admin'
+mqtt = Mqtt(app)
 
+@mqtt.on_connect()
+def handle_connect(client, userdata, flags, rc):
+    cLog.info("Connected to the MQTT")
+    mqtt.subscribe(broker_topic)
 
-def connect_mqtt() -> mqtt_client:
-    def on_connect(client, userdata, flags, rc):
-        if rc == 0:
-            print("Connected to MQTT Broker!")
-        else:
-            print("Failed to connect, return code %d\n", rc)
+@mqtt.on_disconnect()
+def handle_disconnect():
+    cLog.info("CLIENT DISCONNECTED")
 
-    client = mqtt_client.Client(client_id)
-    client.username_pw_set(username, password)
-    client.on_connect = on_connect
-    client.connect(broker, port)
-    return client
+@mqtt.on_message()
+def handle_mqtt_message(client, userdata, message):
+    data = dict(
+        topic=message.topic,
+        payload=message.payload.decode()
+    )
+    cLog.info(f"Message Payload: {data}")
+    socketio.emit('mqtt_data', data=data)
 
+@socketio.on('publish')
+def handle_publish(json_str):
+    data = json.loads(json_str)
+    mqtt.publish(data['topic'], data['message'])
 
-def subscribe(client: mqtt_client):
-    def on_message(client, userdata, msg):
-        print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
-
-    client.subscribe(topic)
-    client.on_message = on_message
+@socketio.on('disconnect')
+def on_disconnect():
+    cLog.info('Client disconnected from SocketIO')

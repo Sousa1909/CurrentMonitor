@@ -86,7 +86,7 @@ def connectWifi(location):
 #
 #################################
 
-# VREF stand for the reference Voltage (power to the sensor)
+# VREF stands for the reference Voltage (power to the sensor)
 VREF = 5
 # Maximum current range that the sensor can read 
 ACTDetectionRange = 20 
@@ -119,7 +119,7 @@ def currentCalc():
 
 #################################
 #
-#       MQTT PUBLISH
+#       MQTT CONNECT
 #
 #################################
 
@@ -171,9 +171,8 @@ def mqttReconnect():
     Returns:
         void: --
     """
-    print('Failed to connected to the MQTT Broker. Attempting to reconnect...')
+    #print('Failed to connected to the MQTT Broker. Attempting to reconnect...')
     time.sleep(5)
-    print("antes do RESET")
     machine.reset()
 
 #################################
@@ -211,7 +210,7 @@ def run():
                     msg=str(toPublish)
                     )
                 print('Published to MQTT Broker Successfully!\n')
-                time.sleep(3)
+                time.sleep(10)
             except:
                 print("Something went wrong with the connection! Attempting to reconnect...")
                 mqttReconnect()
