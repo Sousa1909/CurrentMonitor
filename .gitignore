@@ -1,3 +1,4 @@
 /Vagrant/.vagrant
 /.vscode
 /Vagrant/shared_folder/WebApp/__pycache__
+/Vagrant/shared_folder/WebApp/app/__pycache__
