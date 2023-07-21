@@ -1,0 +1,8 @@
+#Ignore Vagrant configuration dir
+.Vagrant/.vagrant/
+
+#Ignore Python cache files
+.Vagrant/shared_folder/WebApp/__pycache__
+
+#Ignore VSCode dir
+.vscode/
