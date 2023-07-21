@@ -22,7 +22,6 @@ Vagrant.configure("2") do |config|
     ubuntu.vm.provision "shell", path: "scripts/mosquitto.sh"
     ubuntu.vm.provision "shell", path: "scripts/python.sh"
     ubuntu.vm.provision "shell", path: "scripts/ngrok.sh"
-    ubuntu.vm.provision "shell", path: "scripts/web.sh"
     ubuntu.vm.provision "shell", path: "scripts/final.sh"
     end
 end

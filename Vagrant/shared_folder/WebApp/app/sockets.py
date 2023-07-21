@@ -1,24 +1,44 @@
-from app import socketio
-import paho.mqtt.client as mqtt
+import random
+import json
+from app import app, socketio, cLog
+from flask_mqtt import Mqtt
 
-mqtt_broker = 'localhost'
-mqtt_topic = 'AMPS'
+#TODO: change the names of these variables
+broker_topic = "AMPS"
 
-@socketio.on('connect')
-def on_connect(client, userdata, flags, rc):
-    print('Connected to MQTT broker')
-    client.subscribe(mqtt_topic)
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['MQTT_BROKER_URL'] = 'localhost'
+app.config['MQTT_BROKER_PORT'] = 1883
+app.config['MQTT_USERNAME'] = 'admin'
+app.config['MQTT_PASSWORD'] = 'admin'
+app.config['MQTT_KEEPALIVE'] = 60
+app.config['MQTT_TLS_ENABLED'] = False
+
+mqtt = Mqtt(app)
+
+@mqtt.on_connect()
+def handle_connect(client, userdata, flags, rc):
+    cLog.info("Connected to the MQTT")
+    mqtt.subscribe(broker_topic)
+
+@mqtt.on_disconnect()
+def handle_disconnect():
+    cLog.info("CLIENT DISCONNECTED")
+
+@mqtt.on_message()
+def handle_mqtt_message(client, userdata, message):
+    data = dict(
+        topic=message.topic,
+        payload=message.payload.decode()
+    )
+    cLog.info(f"Message Payload: {data}")
+    socketio.emit('mqtt_data', data=data)
+
+@socketio.on('publish')
+def handle_publish(json_str):
+    data = json.loads(json_str)
+    mqtt.publish(data['topic'], data['message'])
 
 @socketio.on('disconnect')
 def on_disconnect():
-    print('Client disconnected')
-    # Additional logic for handling client disconnection
-
-def on_message_mqtt(client, userdata, msg):
-    data = msg.payload.decode('utf-8')
-    socketio.emit('mqtt_data', data)  # Emit data to WebSocket clients
-
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message_mqtt
-client.connect(mqtt_broker, 1883, 60)
+    cLog.info('Client disconnected from SocketIO')

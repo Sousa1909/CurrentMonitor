@@ -93,8 +93,8 @@ function atualizarGrafico(dados) {
 
     historicoValores.push(dados);
 
-    valorAtual = dados;
-    document.getElementById('informacao1-valor').textContent = valorAtual;
+    //valorAtual = dados;
+    //document.getElementById('informacao1-valor').textContent = valorAtual;
 
     // Calcular o custo com base nos amperes
     const custo = calcularCusto(dados);
@@ -111,8 +111,10 @@ function atualizarGrafico(dados) {
     verificarAlerta(ultimoValor);
 }
 
-// Simulação de recebimento contínuo de dados do sensor
-setInterval(() => {
-    const novoDado = Math.random() * 100; // Gerar um novo dado aleatório
-    atualizarGrafico(novoDado);
-}, 1000); // Atualizar a cada segundo
+const socket = io();
+
+socket.on('mqtt_data', (data) => {
+    console.log("Received MQTT data: ", data)
+    atualizarGrafico(data.payload);
+    document.getElementById('informacao1-valor').textContent = data.payload;
+});

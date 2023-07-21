@@ -20,5 +20,5 @@ pip install flask_ngrok
 # Install pyngrok
 pip install pyngrok
 
-# Install paho-mqtt
-pip install paho-mqtt
+# Install flask_mqtt
+pip install flask_mqtt

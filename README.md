@@ -31,6 +31,7 @@ The objective of this project is to use concepts from MQTT (Publisher, Broker & 
              1. Run `vagrant up` in any terminal. This will create the VM according to the specifications in the `Vagrantfile` and the Shell scripts under `/scripts`.         
                 > **Note**  
                 > When running `vagrant up` make sure you are under the same directory as the `Vagrantfile` or else it won't work.  
+                Additionally sometimes it is a good idea to run `vagrant provision` to force the execution of the shell scripts.
              2. When that is done if you want to access the VM's terminal all you have to do is run `vagrant ssh`.
                 > **Note**  
                 > If you want to exit the ssh all you have to do is run `exit` in the VM terminal. Additionally to turn off the VM simply run `vagrant halt` under the same directory as the `Vagrantfile`
@@ -45,3 +46,22 @@ The objective of this project is to use concepts from MQTT (Publisher, Broker & 
 
 > **Warning**  
 > You can only use the AC current sensor to clamp one of the terminals (positive or negative, it it the same) of your AC source, since they cancel each other out and if you were to clamp both you would be reading a null (as in 0) value.
+
+---
+## Project Structure
+
+This project will have three major parts:
+* Sensor + Raspberry Pi Pico W
+  * This will act as a way to read the current value and publish it to the MQTT Broker
+* The MQTT Broker
+  * This will act as the intermediate between the Raspberry Pi Pico W and our Web Application.
+* The Web Application
+  * This is where all the collected data will be displayed.
+  
+### Sensor + Raspberry Pi Pico W
+
+As stated before we will be collecting current values using an Analog Current Sensor and process that data using a Raspberry Pi Pico W. With this in mind lets break down the `currentSensor.py`. In this file there is all the code needed to run the process. You can find this file under the `/RaspPi` directory.  
+
+The process flow described in this file:
+1. The Raspberry Pi Pico W will need to connect to the local Wi-Fi. For that we created a method to do just that called `ConnectWifi`. This method has a particularity that we need to pass our current `location` as a parameter. The reasoning behind this is that since this project was done mainly in two locations (at home and at university) we didn't want to be changing the variables for the `ssid` and `password`, soo we added both credentials in the file and the correct credentials are used according to the parameter passed to the function.
+   
