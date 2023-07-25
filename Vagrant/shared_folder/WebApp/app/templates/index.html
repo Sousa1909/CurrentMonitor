@@ -1,42 +1,80 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Real-Time Data Visualization</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
-    <link rel="stylesheet" type="text/css" href="./static/css/site.css">
-</head>
-<body>
-    <!-- Your HTML content and JavaScript code for data visualization -->
+    <html>
+        <head>
+            <title>Real-Time Data Visualization</title>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+            <link rel="stylesheet" type="text/css" href="./static/css/site.css">
+            <link rel="stylesheet" type="text/css" href="./static/css/partials.css">
+            <link rel="stylesheet" type="text/css" href="./static/css/bootstrap.min.css">
+            <link rel="icon" href="./static/resources/favicon.png">
+        </head>
+        {% include 'partials/header.html' %}
+        <body class="bg-dark text-light">
+            <div class="container">
+                <!-- Your HTML content and JavaScript code for data visualization -->
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Live Data</h1>
+                    <div class="text-end">
+                        <table>
+                            <tr>
+                                <th style="padding-right: 10px;">
+                                    <h4>Toggle data gathering: </h4>
+                                </th>
+                                <th>
+                                    <!-- Rounded switch -->
+                                    <label class="switch">
+                                        <input id="pub-checkbox" type="checkbox" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </th>
+                            </tr>
+                        </table>  
+                    </div>
+                </div>
+                
+
+                <div class="my-4 w-100 chartjs-render-monitor" id="chart">
+                    <canvas id="grafico"></canvas>
+                    <script src="./static/js/site.js"></script>
+                </div>
+
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Live Values</h1>
+                </div>
+
+                
+                <div class="card-container">
+                    <div class="card bg-light mb-3">
+                        <div class="card-header">Current Intensity</div>
+                            <div class="card-body">
+                                <h5 class="card-title">Value in Amps:</h5>
+                                <p class="card-text">
+                                    <h4><span id="informacao1-valor"> A</span></h4>
+                                </p>
+                            </div>
+                    </div>
+                    <div class="card bg-light mb-3">
+                        <div class="card-header">Instant Cost</div>
+                            <div class="card-body">
+                                <h5 class="card-title">Value in €:</h5>
+                                <p class="card-text">
+                                    <h4><span id="informacao2-valor"></span> €</h4>
+                                </p>
+                            </div>
+                    </div>
+                    <div class="card bg-light mb-3">
+                        <div class="card-header">Total Cost</div>
+                            <div class="card-body">
+                                <h5 class="card-title">Value in €:</h5>
+                                <p class="card-text">
+                                    <h4><span id="custo-total-valor"></span> €</h4>
+                                </p>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </body>
+        {% include 'partials/footer.html' %}
+    </html>
     
-    <header>
-        <img src="./static/resources/logo-ipt.jpg" alt="Emblema do IPT">
-        <h1><a class="link-title" href="https://github.com/Sousa1909/CurrentMonitor" target="_blank">Current Monitor</a></h1>
-        <h4>Redes e Infraestruturas</h4>
-    </header>
-
-    <div id="chart">
-        <canvas id="grafico"></canvas>
-        <script src="./static/js/site.js"></script>
-    </div>
-    <div class="card-container">
-        <div class="card">
-            <h2>Intensidade da Corrente (Amperes)</h2>
-            <p>Valor: <span id="informacao1-valor"></span></p>
-        </div>
-        <div class="card">
-            <h2>Custo</h2>
-            <p>Valor: <span id="informacao2-valor"></span> Euros</p>
-            <h2>Custo Total</h2>
-            <p>Custo Total: <span id="custo-total-valor"></span> Euros</p>
-        </div>
-    </div>
-    <div id="condições">
-        <button id="btnAlert">Alerta</button>
-    </div>
-
-    <footer>
-        <p>Gonçalo Sousa nº21874 e João Domingues nº25364</p>
-    </footer>
-</body>
-</html>

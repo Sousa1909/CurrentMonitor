@@ -1,0 +1,4 @@
+/* Custom CSS for the white-colored line effect */
+.navbar {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.397);
+}

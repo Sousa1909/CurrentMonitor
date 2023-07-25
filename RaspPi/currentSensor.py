@@ -2,7 +2,7 @@
 
 import time
 import network
-from machine import ADC, reset
+from machine import ADC, reset, Pin
 from umqtt.simple import MQTTClient
 
 #################################
@@ -89,11 +89,11 @@ def connectWifi(location):
 # VREF stands for the reference Voltage (power to the sensor)
 VREF = 5
 # Maximum current range that the sensor can read 
-ACTDetectionRange = 20 
+AC_RANGE = 20 
 # Amplification factor of the circuitry connected to the SCT013 sensor.
-amplification_factor = 2
+AMP_FACTOR = 2
 # Used Analog Pin
-adc_pin = machine.ADC(0)
+ADC_PIN = machine.ADC(0)
 
 def currentCalc():
     """Returns current sensor value
@@ -106,33 +106,36 @@ def currentCalc():
     peak_voltage = 0
 
     for i in range(5):
-        peak_voltage += adc_pin.read_u16()
+        peak_voltage += ADC_PIN.read_u16()
         time.sleep_ms(1)
 
     peak_voltage /= 5
 
-    voltage_virtual_value = (peak_voltage / 65535 * VREF) / amplification_factor
+    voltage_virtual_value = (peak_voltage / 65535 * VREF) / AMP_FACTOR
 
-    AC_current_value = voltage_virtual_value * ACTDetectionRange
+    AC_current_value = voltage_virtual_value * AC_RANGE
 
     return AC_current_value
 
 #################################
 #
-#       MQTT CONNECT
+#             MQTT
 #
 #################################
 
 # MQTT Broker IP Address
-broker_addr = '192.168.1.100'
+BRK_ADDR = '192.168.1.100'
 # MQTT Client Id
-broker_cid = "Raspberry"
+CLIENT_ID = "Raspberry"
 # MQTT Broker Username
-broker_usr = 'admin'
+BRK_USR = 'admin'
 # MQTT Broker Password
-broker_pswrd = 'admin'
-# MQTT Topic
-broker_topic = 'AMPS'
+BRK_PASSWD = 'admin'
+# MQTT Publish Topic
+PUB_TOPIC = 'AMPS'
+# MQTT Subscribe Topic
+SUB_TOPIC = 'STATUS'
+
 
 def mqttConnect():
     """Establishes connection with the MQTT Broker
@@ -145,21 +148,21 @@ def mqttConnect():
     """
 
     client = MQTTClient(
-        broker_cid,
-        broker_addr,
-        user = broker_usr,
-        password = broker_pswrd,
+        CLIENT_ID,
+        BRK_ADDR,
+        user = BRK_USR,
+        password = BRK_PASSWD,
         keepalive = 60
     )
     client.set_last_will(
-        broker_topic,
+        PUB_TOPIC,
         "Something went wrong! This is the Last Will message.",
         retain=False,
         qos=0
     )
-
+    client.set_callback(mqttSubCallback)
     client.connect(clean_session=False)
-    print('Connected to %s MQTT Broker\n'%(broker_addr))
+    print('Connected to %s MQTT Broker\n'%(BRK_ADDR))
 
     return client
 
@@ -171,9 +174,54 @@ def mqttReconnect():
     Returns:
         void: --
     """
-    #print('Failed to connected to the MQTT Broker. Attempting to reconnect...')
     time.sleep(5)
     machine.reset()
+
+# Defines whether there is a publish of the sensor
+# values or not
+status = "True"
+
+def mqttSubCallback(topic, msg):
+    """Handles responses from MQTT Subscription
+
+    Prints the content of the payload coming from the 
+    MQTT subscription
+
+    Returns:
+        void: --
+    """
+    global status
+    print("New message on topic: {}".format(topic.decode('utf-8')))
+    msg = msg.decode('utf-8')
+    # Change the state
+    status = msg
+    print("Publish status is now: ", msg, "\n")
+
+
+#################################
+#
+#             MISC
+#
+#################################
+
+#create LED object from pin13,Set Pin13 to output
+LED = machine.Pin(
+    "LED",
+    machine.Pin.OUT
+)  
+
+def blink():
+    """Blinks the LED
+
+    Turns on the Raspberry Pi LED for a second and turns it
+    off afterwards
+
+    Returns:
+        void: --
+    """  
+    LED.value(1) 
+    time.sleep(1)
+    LED.value(0)
 
 #################################
 #
@@ -192,24 +240,30 @@ def run():
     """
     connectedToWifi = False
     while connectedToWifi == False:
-        connectedToWifi = connectWifi("home_joao")
+        connectedToWifi = connectWifi("home_goncalo")
     
     while True:
         try:
             client = mqttConnect()
+            client.subscribe(SUB_TOPIC)
         except OSError:
             print("Failed to connect to the MQTT Broker. Attempting to reconnect...")
             mqttReconnect()
 
         while True:
             try:
-                toPublish =  currentCalc()
-                print("Value: ", toPublish, "A")
-                client.publish(
-                    broker_topic,
-                    msg=str(toPublish)
-                    )
-                print('Published to MQTT Broker Successfully!\n')
+                client.check_msg()
+                if (status == "True"):
+                    toPublish =  currentCalc()
+                    print("Value: ", toPublish, "A")
+                    client.publish(
+                        PUB_TOPIC,
+                        msg=str(toPublish)
+                        )
+                    blink()
+                    print('Published to MQTT Broker successfully!\n')
+                else:
+                    print("The Web Client turned off sensor data gathering!\n")
                 time.sleep(10)
             except:
                 print("Something went wrong with the connection! Attempting to reconnect...")

@@ -1,7 +1,7 @@
 import os
 import sys
 import logging as log
-from flask import Flask
+from flask import Flask, request, session, redirect, url_for, render_template
 from flask_socketio import SocketIO
 from pyngrok import ngrok
    
@@ -26,6 +26,7 @@ def logs():
 cLog = logs()   
 
 ##################### APP #####################
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'key!'
 
