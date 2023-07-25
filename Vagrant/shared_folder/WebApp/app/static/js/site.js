@@ -7,10 +7,12 @@ const config = {
     data: {
         labels: [],
         datasets: [{
-            label: 'Dados do Sensor',
+            label: 'Current from RPi Pico W',
             data: [],
-            backgroundColor: 'rgba(93, 155, 212, 0.2)',
-            borderColor: 'rgba(93, 155, 212, 1)',
+            backgroundColor: 'rgba(50,205,50, 1)',
+            borderColor: 'rgba(50,205,50, 1)',
+            strokeColor: "rgba(220,220,220,1)",
+            pointColor: "rgba(220,220,220,1)",
             borderWidth: 1
         }]
     },
@@ -21,17 +23,56 @@ const config = {
                 display: true,
                 title: {
                     display: true,
-                    text: 'Tempo'
+                    text: 'Timestamp',
+                    color: 'white'
+                },
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.5)', // Change the color of the X-axis grid lines
+                },
+                ticks: {
+                    color: 'white', // Change the color of the X-axis tick marks
                 }
             },
             y: {
                 display: true,
                 title: {
                     display: true,
-                    text: 'Valor'
+                    text: 'Current in A',
+                    color: 'white'
+                },
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.5)', // Change the color of the X-axis grid lines
+                },
+                ticks: {
+                    color: 'white', // Change the color of the X-axis tick marks
                 }
             }
-        }
+        },
+        plugins: {
+            legend: {
+                display: true,
+                labels: {
+                    color: 'white', // Color for the legend labels
+                }
+            }
+        },
+        elements: {
+            point: {
+                pointStyle: 'rectRot', // Customize the data points' style (optional)
+                radius: 7, // Adjust the data points' size (optional)
+                backgroundColor: 'rgba(93, 155, 212, 1)', // Data points' background color
+                borderColor: 'white', // Data points' border color
+                borderWidth: 1 // Data points' border width
+            }
+        },
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+            }
+        },
     }
 };
 
@@ -64,22 +105,10 @@ function calcularCustoTotal(historico) {
     return custoTotal;
 }
 
-// Função para verificar e atualizar o estado do botão de alerta
-function verificarAlerta(valor) {
-    const btnAlert = document.getElementById('condições').querySelector('#btnAlert');
-    if (valor > 10) {
-        console.log('Valor maior que 10');
-        btnAlert.classList.add('piscar');
-    } else {
-        console.log('Valor menor que 10');
-        btnAlert.classList.remove('piscar');
-    }
-}
-
 // Function to update the graph with new data
 function atualizarGrafico(dados) {
     // Remove the oldest data point if the number of data points exceeds 10
-    if (chart.data.labels.length >= 10) {
+    if (chart.data.labels.length >= 20) {
         chart.data.labels.shift(); // Remove the first label
         chart.data.datasets[0].data.shift(); // Remove the first data point
     }
@@ -112,13 +141,29 @@ function atualizarGrafico(dados) {
 
     // Verificar o alerta com base no último valor recebido
     const ultimoValor = dados[dados.length - 1];
-    verificarAlerta(ultimoValor);
 }
 
 const socket = io();
 
-socket.on('mqtt_data', (data) => {
-    console.log("Received MQTT data: ", data)
-    atualizarGrafico(data.payload);
-    document.getElementById('informacao1-valor').textContent = data.payload;
+document.addEventListener('DOMContentLoaded', function() {
+
+    // Receives the data from 
+    socket.on('mqtt_data', (data) => {
+        console.log("Received MQTT data: ", data)
+        atualizarGrafico(data.payload);
+        document.getElementById('informacao1-valor').textContent = data.payload;
+    });
+
+    // Get the checkbox element
+    const checkbox = document.getElementById('pub-checkbox');
+
+    // Add an event listener to the checkbox for the 'change' event
+    checkbox.addEventListener('change', function() {
+        // Get the boolean value (true if checked, false if unchecked)
+        const value = checkbox.checked;
+        // Log the value of the checkbox when it changes
+        console.log("Checkbox value:", value);
+        socket.emit('publish', JSON.stringify({ topic: 'STATUS', message: value }));
+    });
 });
+

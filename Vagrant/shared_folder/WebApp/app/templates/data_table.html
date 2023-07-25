@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Display</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <link rel="icon" href="./static/resources/favicon.png">
+    <link rel="stylesheet" type="text/css" href="./static/css/partials.css">
+    <link rel="stylesheet" type="text/css" href="./static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="./static/css/site.css">
+    <link rel="stylesheet" type="text/css" href="./static/css/table.css">
+</head>
+{% include 'partials/header.html' %}
+<body class="bg-dark text-light">
+    <div class="container">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">Data Display</h1>
+        </div>
+        <table id="data-table" class="table table-dark table-striped table-sm">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Topic</th>
+                    <th>Payload</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+    <script src="./static/js/table.js"></script>
+</body>
+{% include 'partials/footer.html' %}
+</html>
